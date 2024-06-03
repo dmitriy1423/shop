@@ -45,9 +45,149 @@ model User {
   updatedAt     DateTime @updatedAt
 
   accounts      Account[]
+  orders        Order[]
+  reviews       Review[]
+  cart          CartItem[]
+  favorites     FavoriteItem[]
+}
+
+model CartItem {
+  id            String  @id @default(uuid())
+  userId        String
+  productId     String
+  quantity      Int
+
+  user          User    @relation(fields: [userId], references: [id])
+  product       Product @relation(fields: [productId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, productId])
+}
+
+model FavoriteItem {
+  id            String  @id @default(uuid())
+  userId        String
+  productId     String
+
+  user          User    @relation(fields: [userId], references: [id])
+  product       Product @relation(fields: [productId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([userId, productId])
+}
+
+
+model Order {
+  id            String  @id @default(uuid())
+  userId String
+  amount Float
+  isPaid Boolean @default(false)
+  deliveryStatus OrderStatus @default(PENDING)
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  items OrderItem[]
+}
+
+model OrderItem {
+  id            String  @id @default(uuid())
+  orderId String
+  productId String
+  price Float
+  quantity Int
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Review {
+  id            String  @id @default(uuid())
+  userId String
+  productId String
+  rating Int
+  comment String
+
+  user User @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Product {
+  id            String  @id @default(uuid())
+  categoryId String
+  name String
+  description String
+  price Float
+  discountPercent Int @default(0)
+  images String[]
+  properties Json
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  reviews Review[]
+  orderItems OrderItem[]
+  cart CartItem[]
+  favorite FavoriteItem[]
+}
+
+model Category {
+  id            String  @id @default(uuid())
+  name String
+  description String
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  products Product[]
+  properties Property[]
+}
+
+model Property {
+  id            String  @id @default(uuid())
+  categoryId String
+  name String
+  values String[]
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Setting {
+  id            String  @id @default(uuid())
+  name String @unique
+  values String[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  COMPLETED
+  CANCELED
 }

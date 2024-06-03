@@ -62,6 +62,18 @@ export const authOptions: AuthOptions = {
 	callbacks: {
 		async redirect({ url, baseUrl }) {
 			return baseUrl
+		},
+		async jwt({ token, user }) {
+			if (user) {
+				token.role = user.role
+			}
+			return token
+		},
+		async session({ session, token }) {
+			if (token) {
+				session.user.role = token.role
+			}
+			return session
 		}
 	}
 }

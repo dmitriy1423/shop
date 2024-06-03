@@ -1,15 +1,15 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Footer from './components/footer/Footer'
-import NavBar from './components/nav/NavBar'
 import { Toaster } from 'react-hot-toast'
+import 'react-loading-skeleton/dist/skeleton.css'
+import Loader from './components/ui/Loader'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
 export const metadata: Metadata = {
-	title: 'E-shop',
-	description: 'E-shop digit'
+	title: 'ElectroShop',
+	description: 'Магазин товаров цифровой техники'
 }
 
 export default function RootLayout({
@@ -19,11 +19,10 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={inter.className}>
+			<body className={`${inter.className} bg-white`}>
+				<Loader />
 				<Toaster />
-				<NavBar />
 				<main>{children}</main>
-				<Footer />
 			</body>
 		</html>
 	)

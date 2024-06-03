@@ -33,7 +33,7 @@ const NavMenu = () => {
 	}
 
 	return (
-		<>
+		<div className="relative z-30">
 			<div>
 				<nav className="hidden sm:flex items-center justify-between gap-3">
 					{navLinks.map((link, index) => (
@@ -46,12 +46,16 @@ const NavMenu = () => {
 						</Link>
 					))}
 				</nav>
-				<button onClick={toggleMenu} className="sm:hidden flex items-center">
+				<button
+					onClick={toggleMenu}
+					className="sm:hidden flex items-center"
+					aria-label="Меню"
+				>
 					{isMenuOpen ? <MdClose size={24} /> : <MdMenuOpen size={24} />}
 				</button>
 			</div>
 			{isMenuOpen && (
-				<nav className="sm:hidden absolute -left-4 flex flex-col items-center w-screen h-screen bg-white shadow-md">
+				<nav className="sm:hidden absolute -left-4 top-8 flex flex-col items-center w-screen bg-white shadow-md">
 					{navLinks.map((link, index) => (
 						<Link
 							href={link.route}
@@ -66,7 +70,7 @@ const NavMenu = () => {
 					))}
 				</nav>
 			)}
-		</>
+		</div>
 	)
 }
 

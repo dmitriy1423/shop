@@ -1,23 +1,29 @@
 'use client'
 
-import { SafeUser } from '@/types'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { AiOutlineGoogle } from 'react-icons/ai'
-import Button from '../components/ui/Button'
-import Heading from '../components/ui/Heading'
-import Input from '../components/ui/inputs/Input'
+import { MdArrowBack } from 'react-icons/md'
+import Button from '../components/buttons/Button'
+import Heading from '../components/heading/Heading'
+import Input from '../components/inputs/Input'
+import { SafeUser } from '@/types'
 
 interface LoginFormProps {
-	currentUser: SafeUser | null
+	user: SafeUser | null
 }
 
-const LoginForm: FC<LoginFormProps> = ({ currentUser }) => {
+const LoginForm: FC<LoginFormProps> = ({ user }) => {
 	const router = useRouter()
+
+	useEffect(() => {
+		if (user) router.replace('/')
+	}, [user, router])
+
 	const [isLoading, setIsLoading] = useState(false)
 	const {
 		register,
@@ -40,10 +46,9 @@ const LoginForm: FC<LoginFormProps> = ({ currentUser }) => {
 				setIsLoading(false)
 
 				if (response?.ok) {
-					/* router.push('/cart')
-				router.refresh() */
 					router.replace('/')
-					toast.success('Logged In')
+					router.refresh()
+					toast.success('Вход выполнен')
 				}
 
 				if (response?.error) {
@@ -54,6 +59,8 @@ const LoginForm: FC<LoginFormProps> = ({ currentUser }) => {
 				toast.error(error.message)
 			})
 	}
+
+	if (user) return null
 
 	return (
 		<>
@@ -71,27 +78,37 @@ const LoginForm: FC<LoginFormProps> = ({ currentUser }) => {
 				id="email"
 				label="Email"
 				disabled={isLoading}
-				register={register}
+				register={register('email', {
+					required: { value: true, message: 'Поле обязательно' }
+				})}
 				errors={errors}
-				required
+				type="email"
 			/>
 			<Input
 				id="password"
-				label="Password"
+				label="Пароль"
 				disabled={isLoading}
-				register={register}
+				register={register('password', {
+					required: { value: true, message: 'Поле обязательно' },
+					minLength: { value: 6, message: 'Минимум 6 символов' }
+				})}
 				errors={errors}
-				required
 				type="password"
 			/>
 			<Button
-				label={isLoading ? 'Loading' : 'Login'}
+				label={isLoading ? 'Загрузка' : 'Войти'}
 				onClick={handleSubmit(onSubmit)}
+				disabled={isLoading}
 			/>
 			<p className="text-sm">
 				Нет аккаунта ?{' '}
 				<Link className="underline" href={'/register'}>
 					Зарегистрироваться
+				</Link>
+			</p>
+			<p className="text-sm">
+				<Link href={'/'} className="flex items-center gap-1 underline">
+					<MdArrowBack /> Вернуться на главную
 				</Link>
 			</p>
 		</>
