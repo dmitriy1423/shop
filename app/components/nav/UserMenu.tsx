@@ -51,6 +51,7 @@ const UserMenu: FC<UserMenuProps> = ({ currentUser }) => {
 				tabIndex={0}
 				aria-expanded={isOpen}
 				aria-haspopup="menu"
+				aria-label="Меню пользователя"
 			>
 				<div className="p-1 sm:p-2 border-[1px] border-slate-400 flex items-center gap-1 rounded-full cursor-pointer hover:shadow-md transition">
 					<Avatar src={currentUser?.image} />
