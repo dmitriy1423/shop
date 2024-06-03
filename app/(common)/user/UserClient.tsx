@@ -98,8 +98,15 @@ const UserClient: FC<UserClientProps> = ({ user, orders, reviews }) => {
 				<div className="mb-5">
 					<Heading title="Кабинет пользователя" />
 				</div>
-				{isLoading && <Skeleton count={1} height={80} />}
-				{user && (
+				{isLoading && (
+					<div className="max-w-[500px] bg-white p-6 rounded-lg shadow-lg mb-5">
+						<div className="flex items-center mb-4">
+							<Skeleton count={1} height={90} />
+						</div>
+					</div>
+				)}
+
+				{user && !isLoading && (
 					<div className="max-w-[500px] bg-white p-6 rounded-lg shadow-lg mb-5">
 						<div className="flex items-center mb-4">
 							<Avatar src={user.image} />
