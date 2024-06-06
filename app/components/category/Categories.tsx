@@ -56,6 +56,7 @@ const Categories: FC<CategoriesProps> = ({ categories }) => {
 						className={
 							'swiper-button-prev w-5 h-5 absolute left-0 top-1/2 transform -translate-y-1/2 bg-blue-700 text-white p-2 rounded-full z-10 hover:bg-opacity-80'
 						}
+						aria-label="Назад"
 					>
 						<MdArrowBack fill="white" />
 					</button>
@@ -63,6 +64,7 @@ const Categories: FC<CategoriesProps> = ({ categories }) => {
 						className={
 							'swiper-button-next w-5 h-5 absolute right-0 top-1/2 transform -translate-y-1/2 bg-blue-700 text-white p-2 rounded-full z-10 hover:bg-opacity-80'
 						}
+						aria-label="Вперёд"
 					>
 						<MdArrowForward fill="white" />
 					</button>
