@@ -1,11 +1,13 @@
 import { getCurrentUser } from '@/actions/getCurrentUser'
 import Link from 'next/link'
 import Container from '../ui/Container'
-import CartCount from './CartCount'
 import NavMenu from './NavMenu'
-import UserMenu from './UserMenu'
-import FavoritesCount from './FavoritesCount'
 import { MdSearch } from 'react-icons/md'
+import dynamic from 'next/dynamic'
+
+const DU = dynamic(() => import('./UserMenu'))
+const DC = dynamic(() => import('./CartCount'))
+const DF = dynamic(() => import('./FavoritesCount'))
 
 const NavBar = async () => {
 	const currentUser = await getCurrentUser()
@@ -31,11 +33,11 @@ const NavBar = async () => {
 						</Link>
 						{currentUser && (
 							<>
-								<CartCount />
-								<FavoritesCount />
+								<DC />
+								<DF />
 							</>
 						)}
-						<UserMenu currentUser={currentUser} />
+						<DU currentUser={currentUser} />
 					</div>
 				</div>
 			</Container>

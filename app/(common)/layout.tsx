@@ -1,7 +1,9 @@
 import { getCurrentUser } from '@/actions/getCurrentUser'
 import Footer from '../components/footer/Footer'
-import NavBar from '../components/nav/NavBar'
-import LoadCartAndFav from './LoadCartAndFav'
+import dynamic from 'next/dynamic'
+
+const DynamicC = dynamic(() => import('./LoadCartAndFav'))
+const DynamicN = dynamic(() => import('../components/nav/NavBar'))
 
 export default async function Layout({
 	children
@@ -12,8 +14,8 @@ export default async function Layout({
 
 	return (
 		<div className="bg-gray-100 flex flex-col min-h-screen">
-			<LoadCartAndFav user={user} />
-			<NavBar />
+			<DynamicC user={user} />
+			<DynamicN />
 			<main className="flex-grow">{children}</main>
 			<Footer />
 		</div>

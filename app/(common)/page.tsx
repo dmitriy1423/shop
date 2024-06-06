@@ -4,10 +4,12 @@ import { getNewProducts } from '@/actions/getNewProducts'
 import { getProducts } from '@/actions/getProducts'
 import { getSettingValue } from '@/actions/getSettingsValue'
 import { Product } from '@prisma/client'
-import Categories from '../components/category/Categories'
-import FeaturedProducts from '../components/featured/FeaturedProducts'
-import NewProducts from '../components/product/NewProducts'
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
+
+const DF = dynamic(() => import('../components/featured/FeaturedProducts'))
+const DN = dynamic(() => import('../components/product/NewProducts'))
+const DC = dynamic(() => import('../components/category/Categories'))
 
 export const metadata: Metadata = {
 	title: 'ElectroShop | Главная',
@@ -27,9 +29,9 @@ export default async function Home() {
 
 	return (
 		<>
-			<FeaturedProducts products={featuredProducts} user={user} />
-			<NewProducts products={newProducts} user={user} />
-			<Categories categories={categories} />
+			<DF products={featuredProducts} user={user} />
+			<DN products={newProducts} user={user} />
+			<DC categories={categories} />
 		</>
 	)
 }
