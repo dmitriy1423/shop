@@ -66,12 +66,12 @@ const ManageCategoriesClient: FC = () => {
 			await axios
 				.put('/api/categories', { ...data, id: editedCategory.id })
 				.then(response => {
-					toast.success('Category edited')
+					toast.success('Категория отредактирована')
 					setEditedCategory(null)
 				})
 		} else {
 			await axios.post('/api/categories', data).then(response => {
-				toast.success('Category created')
+				toast.success('Категория создана')
 			})
 		}
 
@@ -105,7 +105,7 @@ const ManageCategoriesClient: FC = () => {
 		}
 
 		axios.delete(`/api/categories/${category.id}`).then(() => {
-			toast.success('Category deleted')
+			toast.success('Категория удалена')
 			fetchCategories()
 		})
 	}

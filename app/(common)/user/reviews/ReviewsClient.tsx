@@ -49,6 +49,9 @@ const ReviewsClient: FC<ReviewsClientProps> = ({ reviews, totalPages }) => {
 
 	const createPageURL = (ratings: string[], sort: string) => {
 		const params = new URLSearchParams(searchParams)
+		if (params.get('page')) {
+			params.delete('page')
+		}
 		if (ratings.length > 0) {
 			params.set('rating', ratings.join(','))
 		} else {

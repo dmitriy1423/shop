@@ -50,7 +50,7 @@ const ProductClient: FC<ProductClientProps> = ({ product, user, reviews }) => {
 				<div className="mb-5">
 					<Heading title={product.name} />
 				</div>
-				<div className="grid grid-cols-1 sm:grid-cols-5 sm:gap-16">
+				<div className="grid grid-cols-1 sm:grid-cols-5 sm:gap-16 mb-10">
 					<div className="sm:col-span-2">
 						<ProductImages images={product.images} />
 					</div>

@@ -13,7 +13,7 @@ export default async function getGraphData() {
 					gte: startDate.toISOString(),
 					lte: endDate.toISOString()
 				},
-				deliveryStatus: 'COMPLETED'
+				isPaid: true
 			},
 			_sum: {
 				amount: true

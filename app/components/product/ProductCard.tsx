@@ -9,6 +9,7 @@ import AddToFavBtn from '../buttons/AddToFavBtn'
 import ProductDiscountCard from './ProductDiscountCard'
 import ProductDiscountedPrice from './ProductDiscountedPrice'
 import ProductRating from './ProductRating'
+import { truncateText } from '@/utils'
 
 interface ProductCardProps {
 	product: ExtendedProduct
@@ -30,7 +31,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, user }) => {
 				</div>
 			</Link>
 			<Link href={`/product/${product.id}`}>
-				<h3 className="text-lg font-bold mb-2">{product.name}</h3>
+				<h3 className="text-lg font-bold mb-2">{truncateText(product.name)}</h3>
 			</Link>
 			<ProductRating product={product} />
 			<ProductDiscountedPrice product={product} />

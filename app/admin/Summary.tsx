@@ -51,7 +51,7 @@ const Summary: FC<SummaryProps> = ({ orders, products, users }) => {
 			let tempData = { ...prev }
 
 			const totalSale = orders.reduce((acc, item) => {
-				if (item.deliveryStatus === 'COMPLETED') {
+				if (item.isPaid) {
 					return acc + item.amount
 				} else {
 					return acc

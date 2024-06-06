@@ -59,8 +59,6 @@ export async function getFilteredOrders(
 		// Запрос продуктов с фильтрами и сортировкой
 		const orders = await prisma.order.findMany({
 			where,
-			skip: offset,
-			take: perPage,
 			orderBy,
 			include: {
 				items: {
@@ -72,13 +70,11 @@ export async function getFilteredOrders(
 			}
 		})
 
-		// Подсчет общего количества продуктов для пагинации
-		const totalOrders = await prisma.order.count({
-			where
-		})
+		const totalOrders = orders.length
+		const paginatedOrders = orders.slice(offset, offset + perPage)
 
 		return {
-			orders,
+			orders: paginatedOrders,
 			totalOrders,
 			totalPages: Math.ceil(totalOrders / perPage)
 		}

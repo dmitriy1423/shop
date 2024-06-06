@@ -2,10 +2,9 @@ import prisma from '@/libs/prisma'
 
 export async function getFilteredSearchedProducts(
 	currentPage: number,
-	/* query: string, */
 	search: { [key: string]: string }
 ) {
-	const perPage = 2
+	const perPage = 4
 	const offset = (currentPage - 1) * perPage
 
 	try {
@@ -22,20 +21,16 @@ export async function getFilteredSearchedProducts(
 		// Запрос продуктов с фильтрами и сортировкой
 		const products = await prisma.product.findMany({
 			where,
-			skip: offset,
-			take: perPage,
 			orderBy: {
 				createdAt: 'desc'
 			}
 		})
 
-		// Подсчет общего количества продуктов для пагинации
-		const totalProducts = await prisma.product.count({
-			where
-		})
+		const totalProducts = products.length
+		const paginatedProducts = products.slice(offset, offset + perPage)
 
 		return {
-			products,
+			products: paginatedProducts,
 			totalProducts,
 			totalPages: Math.ceil(totalProducts / perPage)
 		}

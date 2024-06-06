@@ -46,11 +46,6 @@ const CategoryClient: FC<CategoryClientProps> = ({
 	const pathname = usePathname()
 	const searchParams = useSearchParams()
 
-	/* const initialValues = category.properties?.map(prop => ({
-		name: prop.name,
-		value: searchParams.get(prop.name) || 'all'
-	})) */
-
 	const createPageURL = (
 		properties: any[],
 		sort: string,
@@ -58,6 +53,9 @@ const CategoryClient: FC<CategoryClientProps> = ({
 		maxPrice: string
 	) => {
 		const params = new URLSearchParams(searchParams)
+		if (params.get('page')) {
+			params.delete('page')
+		}
 		properties.forEach(prop => {
 			if (prop.value === 'all') {
 				params.delete(prop.name)
@@ -89,7 +87,6 @@ const CategoryClient: FC<CategoryClientProps> = ({
 		register,
 		handleSubmit,
 		reset,
-		watch,
 		formState: { errors },
 		control
 	} = useForm<FieldValues>({
@@ -111,10 +108,6 @@ const CategoryClient: FC<CategoryClientProps> = ({
 	})
 
 	useEffect(() => {
-		/* axios.get(`/api/properties?categoryId=${category.id}`).then(response => {
-			setProperties(response.data)
-			setValue('properties', response.data)
-		}) */
 		setIsLoading(true)
 		axios
 			.get(`/api/properties?categoryId=${category.id}`)
@@ -141,17 +134,6 @@ const CategoryClient: FC<CategoryClientProps> = ({
 		)
 	}
 
-	/* useEffect(() => {
-		const urlParams = new URLSearchParams(window.location.search)
-		fields.forEach((field, index) => {
-			const value = urlParams.get(field.name) || 'all'
-			setValue(`properties.${index}.value`, value)
-		})
-		setValue('sort', urlParams.get('sort') || 'all')
-		setValue('minPrice', urlParams.get('minPrice') || '')
-		setValue('maxPrice', urlParams.get('maxPrice') || '')
-	}, [searchParams, fields, setValue]) */
-
 	const resetFilters = () => {
 		reset({
 			properties:
@@ -175,9 +157,9 @@ const CategoryClient: FC<CategoryClientProps> = ({
 				<div className="mb-5">
 					<Heading title={category.name} />
 				</div>
-				<div className="grid grid-cols-1 sm:grid-cols-2 mb-10">
+				<div className="grid grid-cols-1 sm:grid-cols-5 mb-10">
 					{category.products && category.products[0].images.length > 0 ? (
-						<div className="bg-white relative sm:w-3/4 xl:w-1/2 h-65 mb-4 aspect-square rounded-md">
+						<div className="bg-white relative sm:col-span-2 sm:w-3/4 xl:w-1/2 h-65 mb-4 aspect-square rounded-md">
 							<Image
 								fill
 								src={category?.products[0]?.images[0].toString()}
@@ -188,7 +170,7 @@ const CategoryClient: FC<CategoryClientProps> = ({
 					) : (
 						<MdIcecream size={210} />
 					)}
-					<div className="flex flex-col items-start justify-center">
+					<div className="flex flex-col items-start justify-center sm:col-span-3">
 						{category.description}
 					</div>
 				</div>
@@ -210,7 +192,7 @@ const CategoryClient: FC<CategoryClientProps> = ({
 									<Skeleton height={48} />
 								</div>
 							) : (
-								<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 									{fields.map((field, index) => (
 										<div
 											key={field.id}

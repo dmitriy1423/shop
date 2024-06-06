@@ -56,8 +56,6 @@ export async function getFilteredReviewsByUser(
 		// Запрос продуктов с фильтрами и сортировкой
 		const reviews = await prisma.review.findMany({
 			where,
-			skip: offset,
-			take: perPage,
 			orderBy,
 			include: {
 				user: true,
@@ -65,13 +63,11 @@ export async function getFilteredReviewsByUser(
 			}
 		})
 
-		// Подсчет общего количества продуктов для пагинации
-		const totalReviews = await prisma.review.count({
-			where
-		})
+		const totalReviews = reviews.length
+		const paginatedReviews = reviews.slice(offset, offset + perPage)
 
 		return {
-			reviews,
+			reviews: paginatedReviews,
 			totalReviews,
 			totalPages: Math.ceil(totalReviews / perPage)
 		}

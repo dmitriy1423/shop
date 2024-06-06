@@ -28,6 +28,12 @@ export const truncateText = (str: string) => {
 	return str.substring(0, 25) + '...'
 }
 
+export const truncateTextDesc = (str: string) => {
+	if (str.length < 200) return str
+
+	return str.substring(0, 200) + '...'
+}
+
 export const pluralizeRu = (
 	number: number,
 	one: string,

@@ -17,13 +17,16 @@ interface SearchClientProps {
 	products: ExtendedProduct[]
 	totalPages: number
 	user: SafeUser | null
+	totalProducts: number
 }
 
 const SearchClient: FC<SearchClientProps> = ({
 	products,
 	totalPages,
-	user
+	user,
+	totalProducts
 }) => {
+	console.log(products)
 	const router = useRouter()
 	const pathname = usePathname()
 	const searchParams = useSearchParams()
@@ -48,6 +51,9 @@ const SearchClient: FC<SearchClientProps> = ({
 
 	const createPageURL = (query: string) => {
 		const params = new URLSearchParams(searchParams)
+		if (params.get('page')) {
+			params.delete('page')
+		}
 		if (query.length > 0) {
 			params.set('query', query)
 		} else {
@@ -75,7 +81,6 @@ const SearchClient: FC<SearchClientProps> = ({
 							required: { value: true, message: 'Заполните поле' }
 						})}
 						label="Поиск..."
-						/* onChange={e => setQuery(e.target.value)} */
 						type="text"
 						errors={errors}
 					/>
@@ -83,14 +88,14 @@ const SearchClient: FC<SearchClientProps> = ({
 						<Button label="Поиск" type="submit" />
 					</div>
 				</form>
-				{getValues('query') && products.length > 0 ? (
+				{getValues('query') && totalProducts > 0 ? (
 					<>
 						<div className="mb-5">
 							<SubHeading
-								title={`По запросу "${getValues('query')}" найдено ${
-									products.length
-								} ${pluralizeRu(
-									products.length,
+								title={`По запросу "${getValues(
+									'query'
+								)}" найдено ${totalProducts} ${pluralizeRu(
+									totalProducts,
 									'товар',
 									'товара',
 									'товаров'

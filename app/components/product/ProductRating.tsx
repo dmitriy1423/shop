@@ -13,7 +13,7 @@ const ProductRating: FC<ProductRatingProps> = ({ product }) => {
 		0
 
 	return (
-		<div className="p-2 bg-transparent text-white text-sm flex gap-2 items-center font-bold rounded-full absolute left-5 top-5 shadow-lg">
+		<div className="p-2 bg-transparent text-white text-sm flex gap-2 items-center font-bold rounded-full absolute right-5 bottom-20 shadow-lg">
 			<div className="text-yellow-500 text-2xl">★</div>
 			<div className="text-black">{productRating}</div>
 		</div>

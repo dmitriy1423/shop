@@ -7,7 +7,7 @@ export async function getFilteredProductsByCategory(
 	categoryId: string,
 	search: { [key: string]: string }
 ) {
-	const perPage = 2
+	const perPage = 4
 	const offset = (currentPage - 1) * perPage
 
 	const { page, sort, minPrice, maxPrice, ...filteredSearch } = search
@@ -34,10 +34,18 @@ export async function getFilteredProductsByCategory(
 			where.AND = filterConditions
 		}
 
+		if (minPrice || maxPrice) {
+			where.price = {}
+			if (minPrice) {
+				where.price.gte = parseFloat(minPrice)
+			}
+			if (maxPrice) {
+				where.price.lte = parseFloat(maxPrice)
+			}
+		}
+
 		let products = await prisma.product.findMany({
 			where,
-			skip: offset,
-			take: perPage,
 			include: {
 				reviews: true
 			}
@@ -52,22 +60,6 @@ export async function getFilteredProductsByCategory(
 				discountedPrice
 			}
 		})
-
-		if (minPrice || maxPrice) {
-			products = products.filter(product => {
-				if (minPrice && maxPrice) {
-					return (
-						product.discountedPrice >= parseFloat(minPrice) &&
-						product.discountedPrice <= parseFloat(maxPrice)
-					)
-				} else if (minPrice) {
-					return product.discountedPrice >= parseFloat(minPrice)
-				} else if (maxPrice) {
-					return product.discountedPrice <= parseFloat(maxPrice)
-				}
-				return true
-			})
-		}
 
 		if (sort === 'cheap') {
 			products.sort((a, b) => a.discountedPrice - b.discountedPrice)
@@ -85,12 +77,11 @@ export async function getFilteredProductsByCategory(
 			)
 		}
 
-		const totalProducts = await prisma.product.count({
-			where
-		})
+		const totalProducts = products.length
+		const paginatedProducts = products.slice(offset, offset + perPage)
 
 		return {
-			products,
+			products: paginatedProducts,
 			totalProducts,
 			totalPages: Math.ceil(totalProducts / perPage)
 		}

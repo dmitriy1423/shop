@@ -13,14 +13,17 @@ const SearchPage = async ({ searchParams }: any) => {
 	const user = await getCurrentUser()
 	const currentPage = Number(searchParams?.page) || 1
 
-	const { products, totalPages } = await getFilteredSearchedProducts(
-		currentPage,
-		searchParams
-	)
+	const { products, totalPages, totalProducts } =
+		await getFilteredSearchedProducts(currentPage, searchParams)
 
 	return (
 		<>
-			<SearchClient products={products} totalPages={totalPages} user={user} />
+			<SearchClient
+				products={products}
+				totalPages={totalPages}
+				user={user}
+				totalProducts={totalProducts}
+			/>
 		</>
 	)
 }

@@ -62,6 +62,9 @@ const CatalogClient: FC<CatalogClientProps> = ({
 		maxPrice: string
 	) => {
 		const params = new URLSearchParams(searchParams)
+		if (params.get('page')) {
+			params.delete('page')
+		}
 		if (categoryIds.length > 0) {
 			params.set('categoryId', categoryIds.join(','))
 		} else {

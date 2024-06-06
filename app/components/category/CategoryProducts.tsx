@@ -27,11 +27,13 @@ const CategoryProducts: FC<CategoryProductsProps> = ({ category, user }) => {
 						</Link>
 					</div>
 
-					<ProductsGrid
-						products={category.products.slice(0, 3)}
-						user={user}
-						type="default"
-					/>
+					<div className="mb-5">
+						<ProductsGrid
+							products={category.products.slice(0, 3)}
+							user={user}
+							type="default"
+						/>
+					</div>
 				</>
 			)}
 		</>

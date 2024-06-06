@@ -53,6 +53,9 @@ const OrdersClient: FC<OrdersClientProps> = ({ user, orders, totalPages }) => {
 
 	const createPageURL = (statuses: string[], sort: string) => {
 		const params = new URLSearchParams(searchParams)
+		if (params.get('page')) {
+			params.delete('page')
+		}
 		if (statuses.length > 0) {
 			params.set('status', statuses.join(','))
 		} else {

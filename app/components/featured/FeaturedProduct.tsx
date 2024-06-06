@@ -8,6 +8,7 @@ import { MdOutlineImage } from 'react-icons/md'
 import Container from '../ui/Container'
 import AddToCartBtn from '../buttons/AddToCartBtn'
 import { SafeUser } from '@/types'
+import { truncateTextDesc } from '@/utils'
 
 interface FeaturedProductProps {
 	product: Product
@@ -16,13 +17,15 @@ interface FeaturedProductProps {
 
 const FeaturedProduct: FC<FeaturedProductProps> = ({ product, user }) => {
 	return (
-		<div className="bg-blue-700/50 text-white pb-12">
+		<div className="bg-blue-700/50 text-white py-6">
 			<Container>
-				<div className="flex flex-col items-center justify-center md:px-14 md:grid md:grid-cols-2">
+				<div className="flex flex-col gap-5 items-center justify-center md:px-14 md:grid md:grid-cols-2">
 					<div className="flex items-center">
 						<div className="order-1 md:order-2">
 							<h2 className="text-2xl">{product.name}</h2>
-							<p className="text-gray-200">{product.description}</p>
+							<p className="text-gray-200">
+								{truncateTextDesc(product.description)}
+							</p>
 							<div className="flex gap-3 mt-6">
 								<Link
 									href={`/product/${product.id}`}

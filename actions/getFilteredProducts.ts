@@ -4,7 +4,7 @@ export async function getFilteredProducts(
 	currentPage: number,
 	search: { [key: string]: string }
 ) {
-	const perPage = 2
+	const perPage = 9
 	const offset = (currentPage - 1) * perPage
 
 	const { page, sort, minPrice, maxPrice, categoryId, ...filteredSearch } =
@@ -14,16 +14,15 @@ export async function getFilteredProducts(
 		let where: {
 			categoryId?: { in: string[] }
 			AND?: any[]
+			price?: any
 		} = {}
 
-		// Извлекаем id категорий из параметров поиска
 		const categoryIds = categoryId ? categoryId.split(',') : []
 
 		if (categoryIds.length > 0) {
 			where.categoryId = { in: categoryIds }
 		}
 
-		// Фильтруем только по тем параметрам, которые не равны 'all'
 		const filterConditions = Object.entries(filteredSearch)
 			.filter(([key, value]) => value !== 'all')
 			.map(([key, value]) => ({
@@ -37,17 +36,23 @@ export async function getFilteredProducts(
 			where.AND = filterConditions
 		}
 
-		// Запрос продуктов с фильтрами
+		if (minPrice || maxPrice) {
+			where.price = {}
+			if (minPrice) {
+				where.price.gte = parseFloat(minPrice)
+			}
+			if (maxPrice) {
+				where.price.lte = parseFloat(maxPrice)
+			}
+		}
+
 		let products = await prisma.product.findMany({
 			where,
-			skip: offset,
-			take: perPage,
 			include: {
 				reviews: true
 			}
 		})
 
-		// Применяем скидку к цене для каждого продукта
 		products = products.map(product => {
 			const discountedPrice = Math.round(
 				product.price * (1 - product.discountPercent / 100)
@@ -58,24 +63,6 @@ export async function getFilteredProducts(
 			}
 		})
 
-		// Фильтруем продукты по цене с учетом скидки
-		if (minPrice || maxPrice) {
-			products = products.filter(product => {
-				if (minPrice && maxPrice) {
-					return (
-						product.discountedPrice >= parseFloat(minPrice) &&
-						product.discountedPrice <= parseFloat(maxPrice)
-					)
-				} else if (minPrice) {
-					return product.discountedPrice >= parseFloat(minPrice)
-				} else if (maxPrice) {
-					return product.discountedPrice <= parseFloat(maxPrice)
-				}
-				return true
-			})
-		}
-
-		// Сортировка
 		if (sort === 'cheap') {
 			products.sort((a, b) => a.discountedPrice - b.discountedPrice)
 		} else if (sort === 'expensive') {
@@ -92,13 +79,11 @@ export async function getFilteredProducts(
 			)
 		}
 
-		// Подсчет общего количества продуктов для пагинации
-		const totalProducts = await prisma.product.count({
-			where
-		})
+		const totalProducts = products.length
+		const paginatedProducts = products.slice(offset, offset + perPage)
 
 		return {
-			products,
+			products: paginatedProducts,
 			totalProducts,
 			totalPages: Math.ceil(totalProducts / perPage)
 		}
