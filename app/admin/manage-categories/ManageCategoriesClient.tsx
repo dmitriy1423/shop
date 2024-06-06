@@ -99,12 +99,12 @@ const ManageCategoriesClient: FC = () => {
 		}
 	}
 
-	const deleteCategory = (category: ExtendedCategory) => {
-		if (!category.products) {
-			return toast.error('xxxxxxxxx')
+	const deleteCategory = async (category: ExtendedCategory) => {
+		if (category.products && category.products?.length > 0) {
+			return toast.error('Нельзя удалить категорию, у которой есть товары')
 		}
 
-		axios.delete(`/api/categories/${category.id}`).then(response => {
+		axios.delete(`/api/categories/${category.id}`).then(() => {
 			toast.success('Category deleted')
 			fetchCategories()
 		})
@@ -134,7 +134,8 @@ const ManageCategoriesClient: FC = () => {
 				id: category.id,
 				name: category.name,
 				description: category.description,
-				properties: category.properties
+				properties: category.properties,
+				products: category.products
 			}
 		})
 	}
@@ -267,7 +268,7 @@ const ManageCategoriesClient: FC = () => {
 					<Skeleton count={10} />
 				</div>
 			)}
-			{categories.length > 0 && (
+			{!isLoading && categories.length > 0 && (
 				<div style={{ height: 600, width: '100%' }} className="mt-5">
 					<DataGrid
 						rows={rows}

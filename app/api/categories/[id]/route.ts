@@ -36,7 +36,7 @@ export async function DELETE(
 			where: { id: params.id }
 		})
 
-		return NextResponse.json(category)
+		return NextResponse.json({ message: 'Category deleted' })
 	} catch (error) {
 		return NextResponse.json(error)
 	}
