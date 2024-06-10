@@ -3,6 +3,7 @@ import prisma from '@/libs/prisma'
 import Stripe from 'stripe'
 import { buffer } from 'micro'
 import { NextApiRequest } from 'next'
+import { headers } from 'next/headers'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 	apiVersion: '2024-04-10'
@@ -13,8 +14,8 @@ export async function POST(req: NextApiRequest) {
 	/* const body = await buffer(req) */
 	const requestBuffer = req.body
 	const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
-	/* const sig = headers().get('stripe-signature') as string */
-	const sig = req.headers['stripe-signature'] as string
+	const sig = headers().get('stripe-signature') as string
+	/* const sig = req.headers['stripe-signature'] as string */
 	/* const sig = req.headers.get('stripe-signature') as string */
 
 	let event: Stripe.Event
