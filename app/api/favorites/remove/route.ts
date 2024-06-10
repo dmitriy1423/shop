@@ -15,7 +15,11 @@ export async function POST(req: NextRequest) {
 			where: { userId_productId: { productId, userId: currentUser.id } }
 		})
 
-		const updatedFavorites = await prisma.favoriteItem.findMany()
+		const updatedFavorites = await prisma.favoriteItem.findMany({
+			where: {
+				userId: currentUser.id
+			}
+		})
 		return NextResponse.json(updatedFavorites)
 	} catch (error) {
 		return NextResponse.json(error)
