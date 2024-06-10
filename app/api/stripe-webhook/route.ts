@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/libs/prisma'
 import Stripe from 'stripe'
-import { buffer } from 'micro'
-import { NextApiRequest } from 'next'
 import { headers } from 'next/headers'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -10,19 +8,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 })
 
 export async function POST(req: NextRequest) {
-	/* const body = await req.text() */
-	/* const body = await buffer(req) */
-	const requestBuffer = Buffer.from(await req.text())
+	const body = await req.text()
 	const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
-	/* const sig = headers().get('stripe-signature') as string */
-
-	const sig = req.headers.get('stripe-signature') as string
-	console.log('-----------------', sig)
+	const sig = headers().get('stripe-signature') as string
 
 	let event: Stripe.Event
 
 	try {
-		event = stripe.webhooks.constructEvent(requestBuffer, sig, endpointSecret)
+		event = stripe.webhooks.constructEvent(body, sig, endpointSecret)
 	} catch (err: any) {
 		return NextResponse.json(`Webhook Error: ${err}`, {
 			status: 400
@@ -51,19 +44,3 @@ export async function POST(req: NextRequest) {
 
 	return NextResponse.json({ received: true })
 }
-
-/* const buffer = (req: NextApiRequest) => {
-	return new Promise<Buffer>((resolve, reject) => {
-		const chunks: Buffer[] = []
-
-		req.on('data', (chunk: Buffer) => {
-			chunks.push(chunk)
-		})
-
-		req.on('end', () => {
-			resolve(Buffer.concat(chunks))
-		})
-
-		req.on('error', reject)
-	})
-} */
