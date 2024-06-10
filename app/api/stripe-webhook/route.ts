@@ -12,7 +12,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 export async function POST(req: NextRequest) {
 	/* const body = await req.text() */
 	/* const body = await buffer(req) */
-	const requestBuffer = Buffer.from(JSON.stringify(req.body))
+	const requestBuffer = Buffer.from(await req.text())
 	const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 	/* const sig = headers().get('stripe-signature') as string */
 
