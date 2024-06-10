@@ -4,6 +4,8 @@ import Stripe from 'stripe'
 import { buffer } from 'micro'
 import { headers } from 'next/headers'
 
+export const runtime = 'edge'
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 	apiVersion: '2024-04-10'
 })
@@ -12,6 +14,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 	const body = await req.text()
 	const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 	const sig = headers().get('stripe-signature') as string
+	console.log(sig)
 
 	let event: Stripe.Event
 
