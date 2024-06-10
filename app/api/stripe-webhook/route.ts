@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/libs/prisma'
 import Stripe from 'stripe'
-import { buffer } from 'node:stream/consumers'
+import { buffer } from 'micro'
 import { headers } from 'next/headers'
 import { IncomingMessage } from 'http'
 
