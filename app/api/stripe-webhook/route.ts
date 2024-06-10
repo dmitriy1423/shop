@@ -2,17 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/libs/prisma'
 import Stripe from 'stripe'
 import { headers } from 'next/headers'
-import { IncomingMessage } from 'http'
+import { NextApiRequest } from 'next'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 	apiVersion: '2024-04-10'
 })
 
-export async function POST(req: NextRequest) {
-	const body = await req.text()
+export async function POST(req: NextApiRequest) {
+	/* const body = await req.text() */
+	const body = await buffer(req)
 	const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 	/* const sig = headers().get('stripe-signature') as string */
-	const sig = req.headers.get('stripe-signature') as string
+	const sig = req.headers['stripe-signature'] as string
 
 	let event: Stripe.Event
 
@@ -45,4 +46,20 @@ export async function POST(req: NextRequest) {
 	}
 
 	return NextResponse.json({ received: true })
+}
+
+const buffer = (req: NextApiRequest) => {
+	return new Promise<Buffer>((resolve, reject) => {
+		const chunks: Buffer[] = []
+
+		req.on('data', (chunk: Buffer) => {
+			chunks.push(chunk)
+		})
+
+		req.on('end', () => {
+			resolve(Buffer.concat(chunks))
+		})
+
+		req.on('error', reject)
+	})
 }
