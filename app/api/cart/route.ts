@@ -9,6 +9,9 @@ export async function GET(req: NextRequest) {
 
 	try {
 		const cartItems = await prisma.cartItem.findMany({
+			where: {
+				userId: currentUser.id
+			},
 			include: {
 				product: true
 			},

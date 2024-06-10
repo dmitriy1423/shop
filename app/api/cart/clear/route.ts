@@ -8,7 +8,11 @@ export async function DELETE(req: NextRequest) {
 	if (!currentUser) return NextResponse.json({ message: 'User not found' })
 
 	try {
-		await prisma.cartItem.deleteMany()
+		await prisma.cartItem.deleteMany({
+			where: {
+				userId: currentUser.id
+			}
+		})
 
 		return NextResponse.json({ message: 'Cart clear' })
 	} catch (error) {

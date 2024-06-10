@@ -8,7 +8,11 @@ export async function GET(req: NextRequest) {
 	if (!currentUser) return NextResponse.json({ message: 'User not found' })
 
 	try {
-		const products = await prisma.cartItem.findMany({})
+		const products = await prisma.cartItem.findMany({
+			where: {
+				userId: currentUser.id
+			}
+		})
 		const totalQty = products.reduce((total, item) => total + item.quantity, 0)
 
 		return NextResponse.json(totalQty)
