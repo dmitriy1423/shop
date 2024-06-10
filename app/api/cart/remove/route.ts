@@ -15,7 +15,11 @@ export async function POST(req: NextRequest) {
 			where: { userId_productId: { productId, userId: currentUser.id } }
 		})
 
-		const updatedCartItems = await prisma.cartItem.findMany()
+		const updatedCartItems = await prisma.cartItem.findMany({
+			where: {
+				userId: currentUser.id
+			}
+		})
 		return NextResponse.json(updatedCartItems)
 	} catch (error) {
 		return NextResponse.json(error)
